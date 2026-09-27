@@ -7,6 +7,7 @@ import { calculateSpoilageRisk } from './modules/cargoService.js';
 import { triggerEmergencyAlert } from './modules/alertService.js';
 import { speakAlert } from './modules/speechService.js';
 import { calculateFuelAndCarbon } from './modules/fuelService.js';
+import { initNetworkListener, queueOfflineAction } from './modules/offlineService.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('auth-container');
@@ -199,46 +200,90 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 3. Driver Fatigue & Compliance Interaction
-    const fatigueBtn = document.getElementById('check-fatigue-btn');
-    if (fatigueBtn) {
-        fatigueBtn.addEventListener('click', async () => {
-            const mins = parseInt(document.getElementById('driving-hours-input').value) || 120;
-            const fatigueReport = checkDriverFatigue((mins / 60).toFixed(1), mins);
-            
-            const resultEl = document.getElementById('fatigue-result');
-            if (resultEl) {
-                resultEl.textContent = `Fatigue Level: ${fatigueReport.fatigueStatus} | Action: ${fatigueReport.recommendation}`;
-            }
-
-            if (fatigueReport.alertRequired) {
-                try {
-                    await triggerEmergencyAlert({
-                        title: `DRIVER SAFETY ALERT: ${fatigueReport.fatigueStatus.toUpperCase()}`,
-                        message: `Driver has logged ${mins} continuous minutes. ${fatigueReport.recommendation}`,
-                        timestamp: new Date().toLocaleString()
-                    });
-                } catch (e) {
-                    console.error("Fatigue webhook notification failed");
+        const fatigueBtn = document.getElementById('check-fatigue-btn');
+        if (fatigueBtn) {
+            fatigueBtn.addEventListener('click', async () => {
+                const mins = parseInt(document.getElementById('driving-hours-input').value) || 120;
+                const fatigueReport = checkDriverFatigue((mins / 60).toFixed(1), mins);
+                
+                const resultEl = document.getElementById('fatigue-result');
+                if (resultEl) {
+                    resultEl.textContent = `Fatigue Level: ${fatigueReport.fatigueStatus} | Action: ${fatigueReport.recommendation}`;
                 }
-            }
-        });
-    }
 
-    // 4. Fuel & Carbon Optimizer Interaction
-    const calcFuelBtn = document.getElementById('calculate-fuel-btn');
-    if (calcFuelBtn) {
-        calcFuelBtn.addEventListener('click', () => {
-            const distance = parseFloat(document.getElementById('route-distance-input').value) || 300;
-            const terrain = document.getElementById('terrain-condition-select').value;
-            
-            const report = calculateFuelAndCarbon(distance, terrain, 6);
-            
-            const resultEl = document.getElementById('fuel-result');
-            if (resultEl) {
-                resultEl.innerHTML = `Fuel: <b>${report.totalFuelLitres} L</b> | CO₂: <b>${report.carbonEmissionKg} kg</b><br>Est. Cost: <b>₹${report.estimatedCostINR.toLocaleString()}</b>`;
+                if (fatigueReport.alertRequired) {
+                    try {
+                        await triggerEmergencyAlert({
+                            title: `DRIVER SAFETY ALERT: ${fatigueReport.fatigueStatus.toUpperCase()}`,
+                            message: `Driver has logged ${mins} continuous minutes. ${fatigueReport.recommendation}`,
+                            timestamp: new Date().toLocaleString()
+                        });
+                    } catch (e) {
+                        console.error("Fatigue webhook notification failed");
+                    }
+                }
+            });
+        }
+
+        // 4. Fuel & Carbon Optimizer Interaction
+        const calcFuelBtn = document.getElementById('calculate-fuel-btn');
+        if (calcFuelBtn) {
+            calcFuelBtn.addEventListener('click', () => {
+                const distance = parseFloat(document.getElementById('route-distance-input').value) || 300;
+                const terrain = document.getElementById('terrain-condition-select').value;
+                
+                const report = calculateFuelAndCarbon(distance, terrain, 6);
+                
+                const resultEl = document.getElementById('fuel-result');
+                if (resultEl) {
+                    resultEl.innerHTML = `Fuel: <b>${report.totalFuelLitres} L</b> | CO₂: <b>${report.carbonEmissionKg} kg</b><br>Est. Cost: <b>₹${report.estimatedCostINR.toLocaleString()}</b>`;
+                }
+            });
+        }
+
+        // 5. Offline Resiliency & Sync Handler
+        const badgeEl = document.getElementById('network-status-badge');
+        const queueReadout = document.getElementById('sync-queue-readout');
+        
+        initNetworkListener((status) => {
+            if (badgeEl) {
+                badgeEl.style.background = status.isOnline ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+                badgeEl.style.color = status.isOnline ? '#34d399' : '#f87171';
+                badgeEl.style.borderColor = status.isOnline ? '#059669' : '#dc2626';
+                badgeEl.textContent = status.isOnline ? '🟢 Network Online (Cloud Synced)' : '🔴 Offline Mode (Local SQLite Cache Active)';
             }
         });
-    }
+
+        let simulatedOffline = false;
+        const simOfflineBtn = document.getElementById('simulate-offline-btn');
+        if (simOfflineBtn) {
+            simOfflineBtn.addEventListener('click', () => {
+                simulatedOffline = !simulatedOffline;
+                if (simulatedOffline) {
+                    badgeEl.style.background = 'rgba(239, 68, 68, 0.15)';
+                    badgeEl.style.color = '#f87171';
+                    badgeEl.style.borderColor = '#dc2626';
+                    badgeEl.textContent = '🔴 Offline Mode (Simulated)';
+                    simOfflineBtn.textContent = 'Restore Online Mode';
+                } else {
+                    badgeEl.style.background = 'rgba(16, 185, 129, 0.15)';
+                    badgeEl.style.color = '#34d399';
+                    badgeEl.style.borderColor = '#059669';
+                    badgeEl.textContent = '🟢 Network Online (Cloud Synced)';
+                    simOfflineBtn.textContent = 'Toggle Offline Simulation';
+                }
+            });
+        }
+
+        // Hook into crowdsourced incident reporting to support offline queueing
+        if (reportBtn) {
+            reportBtn.addEventListener('click', () => {
+                if (simulatedOffline) {
+                    const res = queueOfflineAction('INCIDENT_REPORT', { type: document.getElementById('incident-type').value });
+                    if (queueReadout) queueReadout.textContent = res.message;
+                }
+            });
+        }
 
         // Initialize Map and Telemetry
         try {
