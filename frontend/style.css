@@ -302,3 +302,34 @@ body {
     color: #fbbf24;
     font-weight: 600;
 }
+
+/* Driver Fatigue & Compliance Module Styling (Sidebar Adapted) */
+.fatigue-card {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.fatigue-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #38bdf8;
+    margin-bottom: 6px;
+}
+
+.fatigue-card p {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+#fatigue-result {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: rgba(56, 189, 248, 0.1);
+    border-left: 3px solid #38bdf8;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #e2e8f0;
+}

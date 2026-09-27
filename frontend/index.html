@@ -30,14 +30,14 @@
                     <input type="email" id="email-input" required placeholder="operator@ner-routeiq.gov.in">
                 </div>
                 <div class="form-group">
-    <label>Password</label>
-    <div style="position: relative;">
-        <input type="password" id="password-input" required placeholder="••••••••" style="width: 100%; padding-right: 40px;">
-        <button type="button" id="toggle-password-btn" title="Show/Hide Password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #94a3b8;">
-            👁️
-        </button>
-    </div>
-</div>
+                    <label>Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="password-input" required placeholder="••••••••" style="width: 100%; padding-right: 40px;">
+                        <button type="button" id="toggle-password-btn" title="Show/Hide Password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #94a3b8;">
+                            👁️
+                        </button>
+                    </div>
+                </div>
                 <button type="submit" class="btn-primary">Login</button>
             </form>
             <div class="auth-footer">
@@ -47,57 +47,73 @@
         </div>
 
         <!-- DASHBOARD CONTAINER (Hidden until login) -->
-<div id="dashboard-container" class="dashboard-view" style="display: none;">
-    <!-- Top Telemetry Bar -->
-    <div class="telemetry-bar">
-        <div><span>Weather Risk:</span> <span id="risk-score-display" class="risk-highlight">Evaluating...</span></div>
-        <div><span>Active Corridors:</span> <span class="corridor-highlight">NH-27 / NH-37 (Monitored)</span></div>
-        <div class="dash-actions">
-            <button id="emergency-btn" class="btn-danger">🚨 Trigger Emergency Alert</button>
-            <button id="logout-btn" class="btn-secondary">Logout</button>
+        <div id="dashboard-container" class="dashboard-view" style="display: none;">
+            <!-- Top Telemetry Bar -->
+            <div class="telemetry-bar">
+                <div><span>Weather Risk:</span> <span id="risk-score-display" class="risk-highlight">Evaluating...</span></div>
+                <div><span>Active Corridors:</span> <span class="corridor-highlight">NH-27 / NH-37 (Monitored)</span></div>
+                <div class="dash-actions">
+                    <button id="emergency-btn" class="btn-danger">🚨 Trigger Emergency Alert</button>
+                    <button id="logout-btn" class="btn-secondary">Logout</button>
+                </div>
+            </div>
+
+            <!-- Main Workspace: Sidebar Controls + Map -->
+            <div class="dashboard-workspace">
+                <!-- Control Sidebar for Advanced Features -->
+                <aside class="control-sidebar">
+                    
+                    <!-- 1. Cargo Spoilage Calculator -->
+                    <div class="panel-section">
+                        <h3>📦 Cargo Spoilage Calculator</h3>
+                        <div class="form-group">
+                            <label>Cargo Type</label>
+                            <select id="cargo-type-select" class="form-control">
+                                <option value="perishable">Perishable Food / Vegetables</option>
+                                <option value="medical">Medical Supplies / Vaccines</option>
+                                <option value="hardware">General Industrial Hardware</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Transit Delay (Days)</label>
+                            <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
+                        </div>
+                        <button id="calculate-spoilage-btn" class="btn-primary-sm">Compute Spoilage Risk</button>
+                        <div id="spoilage-result" class="metric-readout">Risk Score: --</div>
+                    </div>
+
+                    <!-- 2. Crowdsourced Incident Report -->
+                    <div class="panel-section">
+                        <h3>📍 Crowdsourced Incident Report</h3>
+                        <div class="form-group">
+                            <label>Hazard Type</label>
+                            <select id="incident-type" class="form-control">
+                                <option value="landslide">Landslide / Mudslide</option>
+                                <option value="flood">Flash Flood / Waterlogging</option>
+                                <option value="blockage">Bridge / Road Blockage</option>
+                            </select>
+                        </div>
+                        <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
+                    </div>
+
+                    <!-- 3. Driver Fatigue & Compliance Tracker -->
+                    <div class="panel-section fatigue-card">
+                        <h3>🛡️ Driver Fatigue Tracker</h3>
+                        <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Monitor continuous driving hours and trigger safety rest stops.</p>
+                        <div class="form-group">
+                            <label for="driving-hours-input">Continuous Driving (Mins)</label>
+                            <input type="number" id="driving-hours-input" value="150" min="30" max="600" class="form-control">
+                        </div>
+                        <button id="check-fatigue-btn" class="btn-primary-sm" style="width: 100%; margin-top: 5px;">Evaluate Driver Status</button>
+                        <div id="fatigue-result" style="margin-top: 10px; padding: 8px 10px; background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; border-radius: 4px; font-size: 0.85rem; color: #e2e8f0;">Status: Ready for telemetry.</div>
+                    </div>
+
+                </aside>
+
+                <!-- Map Viewport -->
+                <div id="map"></div>
+            </div>
         </div>
-    </div>
-
-    <!-- Main Workspace: Sidebar Controls + Map -->
-    <div class="dashboard-workspace">
-        <!-- Control Sidebar for Advanced Features -->
-        <aside class="control-sidebar">
-            <div class="panel-section">
-                <h3>📦 Cargo Spoilage Calculator</h3>
-                <div class="form-group">
-                    <label>Cargo Type</label>
-                    <select id="cargo-type-select" class="form-control">
-                        <option value="perishable">Perishable Food / Vegetables</option>
-                        <option value="medical">Medical Supplies / Vaccines</option>
-                        <option value="hardware">General Industrial Hardware</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Transit Delay (Days)</label>
-                    <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
-                </div>
-                <button id="calculate-spoilage-btn" class="btn-primary-sm">Compute Spoilage Risk</button>
-                <div id="spoilage-result" class="metric-readout">Risk Score: --</div>
-            </div>
-
-            <div class="panel-section">
-                <h3>📍 Crowdsourced Incident Report</h3>
-                <div class="form-group">
-                    <label>Hazard Type</label>
-                    <select id="incident-type" class="form-control">
-                        <option value="landslide">Landslide / Mudslide</option>
-                        <option value="flood">Flash Flood / Waterlogging</option>
-                        <option value="blockage">Bridge / Road Blockage</option>
-                    </select>
-                </div>
-                <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
-            </div>
-        </aside>
-
-        <!-- Map Viewport -->
-        <div id="map"></div>
-    </div>
-</div>
 
     </main>
 

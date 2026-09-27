@@ -1,10 +1,12 @@
 import { signIn, signUp, signOut, getCurrentUser, resetPassword } from './modules/authService.js';
+import { checkDriverFatigue } from './modules/driverService.js';
 import { initMap } from './modules/mapService.js';
 import { fetchWeather } from './modules/weatherService.js';
 import { evaluateRisk } from './modules/aiPredictor.js';
 import { calculateSpoilageRisk } from './modules/cargoService.js';
 import { triggerEmergencyAlert } from './modules/alertService.js';
 import { speakAlert } from './modules/speechService.js';
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('auth-container');
@@ -195,6 +197,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
         }
+
+        // Driver Fatigue & Compliance Interaction
+    const fatigueBtn = document.getElementById('check-fatigue-btn');
+    if (fatigueBtn) {
+        fatigueBtn.addEventListener('click', async () => {
+            const mins = parseInt(document.getElementById('driving-hours-input').value) || 120;
+            const fatigueReport = checkDriverFatigue((mins / 60).toFixed(1), mins);
+            
+            const resultEl = document.getElementById('fatigue-result');
+            if (resultEl) {
+                resultEl.textContent = `Fatigue Level: ${fatigueReport.fatigueStatus} | Action: ${fatigueReport.recommendation}`;
+            }
+
+            if (fatigueReport.alertRequired) {
+                try {
+                    await triggerEmergencyAlert({
+                        title: `DRIVER SAFETY ALERT: ${fatigueReport.fatigueStatus.toUpperCase()}`,
+                        message: `Driver has logged ${mins} continuous minutes. ${fatigueReport.recommendation}`,
+                        timestamp: new Date().toLocaleString()
+                    });
+                } catch (e) {
+                    console.error("Fatigue webhook notification failed");
+                }
+            }
+        });
+    }
 
         // Initialize Map and Telemetry
         try {
