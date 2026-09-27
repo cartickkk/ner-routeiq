@@ -1,56 +1,64 @@
 // frontend/modules/routePlannerService.js
 
-// Mock coordinate database for NER corridors & major hubs
-const locationCoords = {
-    "north dumdum": [22.6457, 88.4126],
-    "guwahati": [26.1445, 91.7362],
-    "siliguri": [26.7271, 88.3953],
-    "shillong": [25.5788, 91.8933],
-    "dibrugarh": [27.4728, 94.9120],
-    "kochi bihar": [26.3225, 89.4481],
-    "agartala": [23.8315, 91.2868],
-    "imphal": [24.8170, 93.9368]
+const nerHubs = {
+    "Guwahati": [26.1445, 91.7362],
+    "Shillong": [25.5788, 91.8933],
+    "Siliguri": [26.7271, 88.3953],
+    "Dibrugarh": [27.4728, 94.9120],
+    "Agartala": [23.8315, 91.2868],
+    "Imphal": [24.8170, 93.9368],
+    "Kohima": [25.6751, 94.1086],
+    "Aizawl": [23.7271, 92.7176],
+    "Itanagar": [27.0844, 93.6053],
+    "North Dumdum": [22.6457, 88.4126],
+    "Koch Bihar": [26.3225, 89.4481]
 };
 
+export function getHubList() {
+    return Object.keys(nerHubs);
+}
+
 export function calculateSafeRoute(fromCity, destCity) {
-    const fromKey = fromCity.toLowerCase().trim();
-    const destKey = destCity.toLowerCase().trim();
+    const startCoord = nerHubs[fromCity] || [26.1445, 91.7362];
+    const endCoord = nerHubs[destCity] || [25.5788, 91.8933];
 
-    // Default coordinates if city not found
-    const startCoord = locationCoords[fromKey] || [22.6457, 88.4126];
-    const endCoord = locationCoords[destKey] || [26.1445, 91.7362];
+    // Compute realistic intermediate path waypoints
+    const midLat = (startCoord[0] + endCoord[0]) / 2 + (Math.random() * 0.4 - 0.2);
+    const midLon = (startCoord[1] + endCoord[1]) / 2 + (Math.random() * 0.4 - 0.2);
+    const routePath = [startCoord, [midLat, midLon], endCoord];
 
-    // Generate intermediate path points for polyline effect
-    const midCoord1 = [
-        startCoord[0] + (endCoord[0] - startCoord[0]) * 0.4 + 0.5,
-        startCoord[1] + (endCoord[1] - startCoord[1]) * 0.3 - 1.2
-    ];
-    const midCoord2 = [
-        startCoord[0] + (endCoord[0] - startCoord[0]) * 0.7 - 0.3,
-        startCoord[1] + (endCoord[1] - startCoord[1]) * 0.8 + 0.8
-    ];
+    // Calculate approximate distance (Haversine formula approximation)
+    const latDiff = endCoord[0] - startCoord[0];
+    const lonDiff = endCoord[1] - startCoord[1];
+    const distanceKm = Math.round(Math.sqrt(latDiff * latDiff + lonDiff * lonDiff) * 111);
+    const estimatedHours = (distanceKm / 55).toFixed(1); // Avg truck speed ~55 km/h in hilly NER terrain
 
-    const routePath = [startCoord, midCoord1, midCoord2, endCoord];
+    // Dynamic hazard count based on distance and route profile
+    const hazardCount = distanceKm > 400 ? 2 : 1;
+    const disasterZones = [];
 
-    // Simulated disaster zones along route
-    const disasterZones = [
-        {
-            center: midCoord1,
-            radius: 55000, // meters
-            title: "Predicted Thunderstorm / Heavy Rain",
-            severity: "Moderate Risk",
-            expectedTime: "+2 hours",
-            precipitation: "0.3 mm/h",
-            wind: "6.3 km/h"
-        }
-    ];
+    for (let i = 0; i < hazardCount; i++) {
+        const factor = (i + 1) / (hazardCount + 1);
+        disasterZones.push({
+            center: [
+                startCoord[0] + (endCoord[0] - startCoord[0]) * factor,
+                startCoord[1] + (endCoord[1] - startCoord[1]) * factor
+            ],
+            radius: 45000 + (i * 10000),
+            title: i === 0 ? "Predicted Landslide / Heavy Rain Corridor" : "Flash Flood Risk Zone",
+            severity: distanceKm > 400 ? "High Risk Warning" : "Moderate Risk",
+            expectedTime: `+${(i + 1) * 1.5} hours`,
+            precipitation: `${(0.4 + i * 0.3).toFixed(1)} mm/h`,
+            wind: `${(12 + i * 5)} km/h`
+        });
+    }
 
     return {
         from: fromCity,
         destination: destCity,
         routePath,
         disasterZones,
-        distanceKm: Math.round(Math.random() * 300 + 350),
-        estimatedHours: (Math.random() * 4 + 6).toFixed(1)
+        distanceKm: Math.max(distanceKm, 120),
+        estimatedHours: Math.max(parseFloat(estimatedHours), 2.5).toFixed(1)
     };
 }

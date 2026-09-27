@@ -8,6 +8,8 @@ import { triggerEmergencyAlert } from './modules/alertService.js';
 import { speakAlert } from './modules/speechService.js';
 import { calculateFuelAndCarbon } from './modules/fuelService.js';
 import { initNetworkListener, queueOfflineAction } from './modules/offlineService.js';
+import { calculateSafeRoute } from './modules/routePlannerService.js';
+import { drawRouteOnMap } from './modules/mapService.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('auth-container');
@@ -140,6 +142,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function showDashboard() {
         if (authContainer) authContainer.style.display = 'none';
         if (dashboardContainer) dashboardContainer.style.display = 'flex';
+
+        // 0. Plan Safe Journey Route Planner Handler
+    const findRouteBtn = document.getElementById('find-safest-route-btn');
+    if (findRouteBtn) {
+        findRouteBtn.addEventListener('click', () => {
+            const fromCity = document.getElementById('route-from-select').value;
+            const destCity = document.getElementById('route-dest-select').value;
+            
+            const routeData = calculateSafeRoute(fromCity, destCity);
+            drawRouteOnMap(routeData);
+
+            const readout = document.getElementById('route-status-readout');
+            if (readout) {
+                readout.innerHTML = `✅ Route calculated: <b>${routeData.distanceKm} km</b> (~${routeData.estimatedHours} hrs).<br><b style="color: #f87171;">⚠️ ${routeData.disasterZones.length} predicted disaster zone(s) mapped.</b>`;
+            }
+        });
+    }
 
         // 1. Crowdsourced Incident Reporting Interaction
         const reportBtn = document.getElementById('report-incident-btn');

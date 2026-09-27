@@ -62,6 +62,43 @@
             <div class="dashboard-workspace">
                 <!-- Control Sidebar for Advanced Features -->
                 <aside class="control-sidebar">
+
+                   <!-- 0. Plan Safe Journey Route Planner -->
+                    <div class="panel-section" style="border: 1px solid #38bdf8; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+                        <h3 style="color: #38bdf8;">🗺️ Plan Safe Journey</h3>
+                        <div class="form-group">
+                            <label>From (Origin Hub)</label>
+                            <select id="route-from-select" class="form-control">
+                                <option value="North Dumdum">North Dumdum</option>
+                                <option value="Guwahati">Guwahati</option>
+                                <option value="Siliguri">Siliguri</option>
+                                <option value="Shillong">Shillong</option>
+                                <option value="Dibrugarh">Dibrugarh</option>
+                                <option value="Agartala">Agartala</option>
+                                <option value="Imphal">Imphal</option>
+                                <option value="Kohima">Kohima</option>
+                                <option value="Aizawl">Aizawl</option>
+                                <option value="Itanagar">Itanagar</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination (NER Corridor)</label>
+                            <select id="route-dest-select" class="form-control">
+                                <option value="Guwahati" selected>Guwahati</option>
+                                <option value="Shillong">Shillong</option>
+                                <option value="Siliguri">Siliguri</option>
+                                <option value="Dibrugarh">Dibrugarh</option>
+                                <option value="Kohima">Kohima</option>
+                                <option value="Imphal">Imphal</option>
+                                <option value="Agartala">Agartala</option>
+                                <option value="Aizawl">Aizawl</option>
+                                <option value="Itanagar">Itanagar</option>
+                                <option value="Koch Bihar">Koch Bihar</option>
+                            </select>
+                        </div>
+                        <button id="find-safest-route-btn" class="btn-primary-sm" style="background: #2563eb;">Find Safest Route</button>
+                        <div id="route-status-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 8px; color: #38bdf8;">Select origin & destination hubs.</div>
+                    </div>
                     
                     <!-- 1. Cargo Spoilage Calculator -->
                     <div class="panel-section">
