@@ -6,111 +6,127 @@ import { calculateSpoilageRisk } from './modules/cargoService.js';
 import { triggerEmergencyAlert } from './modules/alertService.js';
 import { speakAlert } from './modules/speechService.js';
 
-let isSignUpMode = false;
+document.addEventListener('DOMContentLoaded', async () => {
+    const authContainer = document.getElementById('auth-container');
+    const dashboardContainer = document.getElementById('dashboard-container');
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email-input');
+    const passwordInput = document.getElementById('password-input');
+    const toggleAuthModeBtn = document.getElementById('toggle-auth-mode');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const logoutBtn = document.getElementById('logout-btn');
+    const emergencyBtn = document.getElementById('emergency-btn');
 
-window.addEventListener('DOMContentLoaded', async () => {
+    let isSignUpMode = false;
+
+    // Check existing session
     const user = await getCurrentUser();
     if (user) {
-        loadDashboard(user);
+        showDashboard();
     } else {
-        initAuthFlow();
+        showAuth();
+    }
+
+    // Toggle between Login and Sign Up mode
+    if (toggleAuthModeBtn) {
+        toggleAuthModeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            isSignUpMode = !isSignUpMode;
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const titleElement = authContainer.querySelector('h2');
+            
+            if (isSignUpMode) {
+                titleElement.textContent = 'Operator Registration';
+                submitBtn.textContent = 'Sign Up';
+                toggleAuthModeBtn.textContent = 'Already have an account? Login';
+            } else {
+                titleElement.textContent = 'Operator Login';
+                submitBtn.textContent = 'Login';
+                toggleAuthModeBtn.textContent = 'Need an account? Sign Up';
+            }
+        });
+    }
+
+    // Handle Forgot Password click
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            if (!email) {
+                alert('Please enter your email address in the field above first.');
+                return;
+            }
+            try {
+                await resetPassword(email);
+                alert('Password reset link sent to your email.');
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+    }
+
+    // Handle Login / Sign Up Form Submission
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            try {
+                if (isSignUpMode) {
+                    await signUp(email, password);
+                    alert('Registration successful! You can now log in.');
+                    isSignUpMode = false;
+                    toggleAuthModeBtn.click();
+                } else {
+                    await signIn(email, password);
+                    showDashboard();
+                }
+            } catch (err) {
+                alert('Authentication Error: ' + err.message);
+            }
+        });
+    }
+
+    // Handle Logout
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await signOut();
+        });
+    }
+
+    // Handle Emergency Alert Button Test
+    if (emergencyBtn) {
+        emergencyBtn.addEventListener('click', async () => {
+            const payload = {
+                title: "CRITICAL HAZARD: Landslide Detected",
+                message: "NH-27 corridor blocked due to heavy rainfall and mudslide risk.",
+                timestamp: new Date().toISOString()
+            };
+            await triggerEmergencyAlert(payload);
+            speakAlert("Emergency alert triggered. Dispatching notifications.");
+            alert("Emergency Webhook Dispatched Successfully!");
+        });
+    }
+
+    function showAuth() {
+        if (authContainer) authContainer.style.display = 'block';
+        if (dashboardContainer) dashboardContainer.style.display = 'none';
+    }
+
+    async function showDashboard() {
+        if (authContainer) authContainer.style.display = 'none';
+        if (dashboardContainer) dashboardContainer.style.display = 'block';
+
+        // Initialize Map and Telemetry
+        initMap('map');
+        const weather = await fetchWeather();
+        const risk = evaluateRisk(weather);
+        const cargo = calculateSpoilageRisk('perishable', 3, risk.score);
+
+        const riskEl = document.getElementById('risk-score-display');
+        if (riskEl) {
+            riskEl.textContent = `${risk.riskLevel} (Score: ${risk.score})`;
+        }
     }
 });
-
-function initAuthFlow() {
-    document.getElementById('auth-container').classList.remove('hidden');
-    document.getElementById('dashboard-container').classList.add('hidden');
-
-    const form = document.getElementById('auth-form');
-    const title = document.getElementById('auth-title');
-    const submitBtn = document.getElementById('auth-submit-btn');
-    const toggleBtn = document.getElementById('toggle-auth-mode');
-    const forgotBtn = document.getElementById('forgot-password-btn');
-
-    toggleBtn.addEventListener('click', () => {
-        isSignUpMode = !isSignUpMode;
-        title.innerText = isSignUpMode ? 'Operator Registration' : 'Operator Login';
-        submitBtn.innerText = isSignUpMode ? 'Sign Up' : 'Login';
-        toggleBtn.innerText = isSignUpMode ? 'Already have an account? Login' : 'Need an account? Sign Up';
-    });
-
-    forgotBtn.addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        if (!email) {
-            alert('Please enter your email address in the field first.');
-            return;
-        }
-        try {
-            await resetPassword(email);
-            alert('Password reset link sent to your email!');
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
-    });
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        try {
-            if (isSignUpMode) {
-                await signUp(email, password);
-                alert('Registration successful! You can now log in.');
-                isSignUpMode = false;
-                title.innerText = 'Operator Login';
-                submitBtn.innerText = 'Login';
-            } else {
-                const data = await signIn(email, password);
-                loadDashboard(data.user);
-            }
-        } catch (err) {
-            alert('Authentication failed: ' + err.message);
-        }
-    };
-}
-
-async function loadDashboard(user) {
-    document.getElementById('auth-container').classList.add('hidden');
-    document.getElementById('dashboard-container').classList.remove('hidden');
-
-    const userNav = document.getElementById('user-nav');
-    userNav.innerHTML = `
-        <span class="text-sm text-slate-300 hidden md:inline">${user.email}</span>
-        <button id="profile-btn" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm font-semibold">Profile & Settings</button>
-        <button id="logout-btn" class="bg-red-600/80 hover:bg-red-600 px-3 py-1 rounded text-sm font-semibold">Logout</button>
-    `;
-
-    document.getElementById('profile-email-display').innerText = user.email;
-
-    document.getElementById('profile-btn').addEventListener('click', () => {
-        document.getElementById('profile-modal').classList.remove('hidden');
-    });
-    document.getElementById('close-profile-btn').addEventListener('click', () => {
-        document.getElementById('profile-modal').classList.add('hidden');
-    });
-    document.getElementById('logout-btn').addEventListener('click', async () => {
-        await signOut();
-    });
-
-    initMap('map');
-
-    const weather = await fetchWeather();
-    document.getElementById('weather-box').innerHTML = `<b>Weather:</b> ${weather.temperature}°C, Wind: ${weather.windspeed} km/h`;
-
-    const risk = evaluateRisk(weather);
-    document.getElementById('risk-box').innerHTML = `<b>AI Terrain Risk:</b> <span class="text-yellow-400">${risk.riskLevel} (${risk.score}%)</span>`;
-
-    const cargo = calculateSpoilageRisk('perishable', 4, risk.score);
-    document.getElementById('cargo-box').innerHTML = `<b>Cargo Status:</b> ${cargo.status} (Score: ${cargo.spoilageScore})`;
-
-    document.getElementById('alert-btn').addEventListener('click', async () => {
-        speakAlert("Warning! High risk condition detected on active transport route.");
-        await triggerEmergencyAlert({
-            title: "NER-RouteIQ Hazard Alert",
-            message: `High risk detected. Risk Score: ${risk.score}%`,
-            timestamp: new Date().toISOString()
-        });
-        alert("Emergency alert webhook dispatched to Telegram and Gmail via Make.com!");
-    });
-}
