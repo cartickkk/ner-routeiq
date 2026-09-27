@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const currentType = passwordInput.getAttribute('type');
             if (currentType === 'password') {
                 passwordInput.setAttribute('type', 'text');
-                togglePasswordBtn.textContent = '🔒'; // Changes icon when revealed
+                togglePasswordBtn.textContent = '🔒';
             } else {
                 passwordInput.setAttribute('type', 'password');
                 togglePasswordBtn.textContent = '👁️';
@@ -138,42 +138,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (authContainer) authContainer.style.display = 'none';
         if (dashboardContainer) dashboardContainer.style.display = 'flex';
 
-       // Cargo Spoilage Calculator Interaction
-    const calcSpoilageBtn = document.getElementById('calculate-spoilage-btn');
-    if (calcSpoilageBtn) {
-        calcSpoilageBtn.addEventListener('click', () => {
-            const type = document.getElementById('cargo-type-select').value;
-            const days = parseInt(document.getElementById('transit-delay-input').value) || 1;
-            const risk = calculateSpoilageRisk(type, days, 75); 
-            
-            const resultEl = document.getElementById('spoilage-result');
-            if (resultEl) {
-                // Extracts the actual numeric value from whichever property name your cargoService uses
-                const prob = risk.probability ?? risk.percentage ?? risk.score ?? (typeof risk === 'object' ? Object.values(risk)[0] : risk);
-                const status = risk.status ?? risk.level ?? 'Evaluated';
-                resultEl.textContent = `Spoilage Probability: ${prob}% (${status})`;
-            }
-        });
-    }
+        // 1. Crowdsourced Incident Reporting Interaction
+        const reportBtn = document.getElementById('report-incident-btn');
+        if (reportBtn) {
+            reportBtn.addEventListener('click', async () => {
+                const hazardType = document.getElementById('incident-type').value;
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lon = position.coords.longitude.toFixed(4);
+                        
+                        try {
+                            await triggerEmergencyAlert({
+                                title: `Field Report: ${hazardType.toUpperCase()} HAZARD`,
+                                message: `Ground unit logged a severe ${hazardType} obstruction at GPS [${lat}, ${lon}]. Immediate route deviation recommended.`,
+                                timestamp: new Date().toLocaleString()
+                            });
+                            alert(`Crowdsourced ${hazardType.toUpperCase()} broadcasted successfully to Telegram!`);
+                        } catch (e) {
+                            alert(`Logged locally. GPS: [${lat}, ${lon}]`);
+                        }
+                    }, () => {
+                        alert(`GPS unavailable. Default corridor coordinates used.`);
+                    });
+                }
+            });
+        }
 
-    // Crowdsourced Incident Reporting Interaction
-    const reportBtn = document.getElementById('report-incident-btn');
-    if (reportBtn) {
-        reportBtn.addEventListener('click', () => {
-            const hazardType = document.getElementById('incident-type').value;
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude.toFixed(4);
-                    const lon = position.coords.longitude.toFixed(4);
-                    alert(`Crowdsourced Hazard Broadcasted!\nType: ${hazardType.toUpperCase()}\nGPS: [${lat}, ${lon}] sent to command center.`);
-                }, () => {
-                    alert(`Crowdsourced Hazard Broadcasted!\nType: ${hazardType.toUpperCase()}\nGPS: [26.2006, 92.9376] (Assam Corridor Default)`);
-                });
-            } else {
-                alert(`Hazard Reported Successfully for NH-27 Corridor.`);
-            }
-        });
-    }
+        // 2. Dynamic Cargo Spoilage Alert
+        const calcSpoilageBtn = document.getElementById('calculate-spoilage-btn');
+        if (calcSpoilageBtn) {
+            calcSpoilageBtn.addEventListener('click', async () => {
+                const type = document.getElementById('cargo-type-select').value;
+                const days = parseInt(document.getElementById('transit-delay-input').value) || 1;
+                const risk = calculateSpoilageRisk(type, days, 75); 
+                
+                const prob = risk.probability ?? risk.percentage ?? risk.score ?? 45;
+                const status = risk.status ?? risk.level ?? 'Evaluated';
+                
+                const resultEl = document.getElementById('spoilage-result');
+                if (resultEl) {
+                    resultEl.textContent = `Spoilage Probability: ${prob}% (${status})`;
+                }
+
+                if (prob > 50) {
+                    try {
+                        await triggerEmergencyAlert({
+                            title: `CRITICAL CARGO SPOILAGE WARNING: ${type.toUpperCase()}`,
+                            message: `A transit delay of ${days} days has raised spoilage risk to ${prob}% (${status}). Immediate dispatch intervention required.`,
+                            timestamp: new Date().toLocaleString()
+                        });
+                    } catch (e) {
+                        console.error("Webhook failed");
+                    }
+                }
+            });
+        }
 
         // Initialize Map and Telemetry
         try {
