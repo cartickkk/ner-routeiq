@@ -6,7 +6,7 @@ import { evaluateRisk } from './modules/aiPredictor.js';
 import { calculateSpoilageRisk } from './modules/cargoService.js';
 import { triggerEmergencyAlert } from './modules/alertService.js';
 import { speakAlert } from './modules/speechService.js';
-
+import { calculateFuelAndCarbon } from './modules/fuelService.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('auth-container');
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Driver Fatigue & Compliance Interaction
+        // 3. Driver Fatigue & Compliance Interaction
     const fatigueBtn = document.getElementById('check-fatigue-btn');
     if (fatigueBtn) {
         fatigueBtn.addEventListener('click', async () => {
@@ -220,6 +220,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } catch (e) {
                     console.error("Fatigue webhook notification failed");
                 }
+            }
+        });
+    }
+
+    // 4. Fuel & Carbon Optimizer Interaction
+    const calcFuelBtn = document.getElementById('calculate-fuel-btn');
+    if (calcFuelBtn) {
+        calcFuelBtn.addEventListener('click', () => {
+            const distance = parseFloat(document.getElementById('route-distance-input').value) || 300;
+            const terrain = document.getElementById('terrain-condition-select').value;
+            
+            const report = calculateFuelAndCarbon(distance, terrain, 6);
+            
+            const resultEl = document.getElementById('fuel-result');
+            if (resultEl) {
+                resultEl.innerHTML = `Fuel: <b>${report.totalFuelLitres} L</b> | CO₂: <b>${report.carbonEmissionKg} kg</b><br>Est. Cost: <b>₹${report.estimatedCostINR.toLocaleString()}</b>`;
             }
         });
     }
