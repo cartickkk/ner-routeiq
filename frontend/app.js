@@ -19,11 +19,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let isSignUpMode = false;
 
-    // Check existing session
-    const user = await getCurrentUser();
-    if (user) {
-        showDashboard();
-    } else {
+    // Check existing active session
+    try {
+        const user = await getCurrentUser();
+        if (user) {
+            showDashboard();
+        } else {
+            showAuth();
+        }
+    } catch (err) {
+        console.error("Session check error:", err);
         showAuth();
     }
 
@@ -36,12 +41,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const titleElement = authContainer.querySelector('h2');
             
             if (isSignUpMode) {
-                titleElement.textContent = 'Operator Registration';
-                submitBtn.textContent = 'Sign Up';
+                if (titleElement) titleElement.textContent = 'Operator Registration';
+                if (submitBtn) submitBtn.textContent = 'Sign Up';
                 toggleAuthModeBtn.textContent = 'Already have an account? Login';
             } else {
-                titleElement.textContent = 'Operator Login';
-                submitBtn.textContent = 'Login';
+                if (titleElement) titleElement.textContent = 'Operator Login';
+                if (submitBtn) submitBtn.textContent = 'Login';
                 toggleAuthModeBtn.textContent = 'Need an account? Sign Up';
             }
         });
@@ -51,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (forgotPasswordLink) {
         forgotPasswordLink.addEventListener('click', async (e) => {
             e.preventDefault();
-            const email = emailInput.value.trim();
+            const email = emailInput ? emailInput.value.trim() : '';
             if (!email) {
                 alert('Please enter your email address in the field above first.');
                 return;
@@ -69,15 +74,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
+            const email = emailInput ? emailInput.value.trim() : '';
+            const password = passwordInput ? passwordInput.value.trim() : '';
 
             try {
                 if (isSignUpMode) {
                     await signUp(email, password);
                     alert('Registration successful! You can now log in.');
                     isSignUpMode = false;
-                    toggleAuthModeBtn.click();
+                    if (toggleAuthModeBtn) toggleAuthModeBtn.click();
                 } else {
                     await signIn(email, password);
                     showDashboard();
@@ -116,17 +121,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function showDashboard() {
         if (authContainer) authContainer.style.display = 'none';
-        if (dashboardContainer) dashboardContainer.style.display = 'block';
+        if (dashboardContainer) dashboardContainer.style.display = 'flex';
 
         // Initialize Map and Telemetry
-        initMap('map');
-        const weather = await fetchWeather();
-        const risk = evaluateRisk(weather);
-        const cargo = calculateSpoilageRisk('perishable', 3, risk.score);
+        try {
+            initMap('map');
+            const weather = await fetchWeather();
+            const risk = evaluateRisk(weather);
+            calculateSpoilageRisk('perishable', 3, risk.score);
 
-        const riskEl = document.getElementById('risk-score-display');
-        if (riskEl) {
-            riskEl.textContent = `${risk.riskLevel} (Score: ${risk.score})`;
+            const riskEl = document.getElementById('risk-score-display');
+            if (riskEl) {
+                riskEl.textContent = `${risk.riskLevel} (Score: ${risk.score})`;
+            }
+        } catch (err) {
+            console.error("Dashboard initialization error:", err);
         }
     }
 });

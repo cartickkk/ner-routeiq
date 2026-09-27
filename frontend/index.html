@@ -4,68 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NER-RouteIQ | SIH26002</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col">
+<body>
 
     <!-- Header -->
-    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-emerald-400">NER-RouteIQ <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded">SIH26002</span></h1>
-        <div id="user-nav" class="flex items-center gap-4">
-            <!-- Dynamically updated by app.js -->
+    <header class="app-header">
+        <div class="logo-area">
+            <h1>NER-RouteIQ</h1>
+            <span class="badge">SIH26002</span>
         </div>
+        <div id="user-nav"></div>
     </header>
 
-    <!-- AUTH CONTAINER (Shown when logged out) -->
-    <div id="auth-container" class="flex-grow flex items-center justify-center p-6">
-        <div class="bg-slate-800 p-8 rounded-xl border border-slate-700 w-full max-w-md shadow-xl">
-            <h2 id="auth-title" class="text-2xl font-bold text-emerald-400 mb-6 text-center">Operator Login</h2>
+    <!-- Main Container -->
+    <main class="main-content">
 
-            <form id="auth-form" class="flex flex-col gap-4">
-                <input type="email" id="email" placeholder="Official Email" required class="bg-slate-900 border border-slate-700 p-3 rounded text-white focus:outline-none focus:border-emerald-500">
-                <input type="password" id="password" placeholder="Password" required class="bg-slate-900 border border-slate-700 p-3 rounded text-white focus:outline-none focus:border-emerald-500">
-                <button type="submit" id="auth-submit-btn" class="bg-emerald-600 hover:bg-emerald-700 font-semibold p-3 rounded transition text-white">Login</button>
+        <!-- AUTH CONTAINER (Centered Login/Signup Box) -->
+        <div id="auth-container" class="auth-card">
+            <h2>Operator Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Official Email</label>
+                    <input type="email" id="email-input" required placeholder="operator@ner-routeiq.gov.in">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
             </form>
-
-            <div class="flex justify-between mt-4 text-sm text-slate-400">
-                <button type="button" id="toggle-auth-mode" class="hover:text-emerald-400 underline">Need an account? Sign Up</button>
-                <button type="button" id="forgot-password-btn" class="hover:text-emerald-400 underline">Forgot Password?</button>
+            <div class="auth-footer">
+                <a href="#" id="toggle-auth-mode">Need an account? Sign Up</a>
+                <a href="#" id="forgot-password-link">Forgot Password?</a>
             </div>
         </div>
-    </div>
 
-    <!-- MAIN DASHBOARD CONTAINER (Hidden until logged in) -->
-    <main id="dashboard-container" class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow hidden">
-        <!-- Map Panel -->
-        <div class="lg:col-span-2 bg-slate-800 p-4 rounded-xl border border-slate-700 h-[500px]" id="map"></div>
-
-        <!-- Analytics & Control Panel -->
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col gap-4">
-            <h2 class="text-lg font-semibold text-emerald-300 border-b border-slate-700 pb-2">AI Intelligence Hub</h2>
-            <div id="weather-box" class="bg-slate-900 p-3 rounded border border-slate-700">Loading Weather telemetry...</div>
-            <div id="risk-box" class="bg-slate-900 p-3 rounded border border-slate-700">Evaluating Terrain Risk...</div>
-            <div id="cargo-box" class="bg-slate-900 p-3 rounded border border-slate-700">Calculating Spoilage Index...</div>
-            <button id="alert-btn" class="bg-red-600 hover:bg-red-700 font-semibold py-2 px-4 rounded text-white transition">Trigger Test Emergency Alert</button>
+        <!-- DASHBOARD CONTAINER (Hidden until login) -->
+        <div id="dashboard-container" class="dashboard-view" style="display: none;">
+            <div class="telemetry-bar">
+                <div><span>Weather Risk:</span> <span id="risk-score-display" class="risk-highlight">Evaluating...</span></div>
+                <div><span>Active Corridors:</span> <span class="corridor-highlight">NH-27 / NH-37 (Monitored)</span></div>
+                <div class="dash-actions">
+                    <button id="emergency-btn" class="btn-danger">🚨 Trigger Emergency Alert</button>
+                    <button id="logout-btn" class="btn-secondary">Logout</button>
+                </div>
+            </div>
+            <div id="map"></div>
         </div>
+
     </main>
 
-    <!-- SETTINGS / PROFILE MODAL (Hidden by default) -->
-    <div id="profile-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center hidden z-50">
-        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 w-full max-w-md relative">
-            <h3 class="text-xl font-bold text-emerald-400 mb-4">Operator Profile & Settings</h3>
-            <div class="space-y-4 text-slate-300">
-                <p><b>Account Email:</b> <span id="profile-email-display"></span></p>
-                <p><b>Role:</b> Senior Logistics Controller (NER Sector)</p>
-                <p><b>Alert Webhook Status:</b> <span class="text-emerald-400">Connected (Make.com)</span></p>
-            </div>
-            <button id="close-profile-btn" class="mt-6 bg-slate-700 hover:bg-slate-600 w-full py-2 rounded text-white font-semibold">Close</button>
-        </div>
-    </div>
-
-    <!-- Leaflet JS & App Entry -->
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- App Entry Point -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
