@@ -215,3 +215,90 @@ body {
     height: 100%;
     background-color: #0f172a;
 }
+
+/* Dashboard Workspace Layout */
+.dashboard-workspace {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 115px);
+    overflow: hidden;
+}
+
+.control-sidebar {
+    width: 320px;
+    background-color: #1e293b;
+    border-right: 1px solid #334155;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    z-index: 5;
+}
+
+.panel-section {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.panel-section h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #22d3ee;
+    margin-bottom: 10px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.btn-primary-sm {
+    width: 100%;
+    padding: 8px;
+    background-color: #0891b2;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 8px;
+}
+
+.btn-primary-sm:hover {
+    background-color: #06b6d4;
+}
+
+.btn-warning-sm {
+    width: 100%;
+    padding: 8px;
+    background-color: #d97706;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 8px;
+}
+
+.btn-warning-sm:hover {
+    background-color: #f59e0b;
+}
+
+.metric-readout {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #fbbf24;
+    font-weight: 600;
+}

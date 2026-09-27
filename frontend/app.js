@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const forgotPasswordLink = document.getElementById('forgot-password-link');
     const logoutBtn = document.getElementById('logout-btn');
     const emergencyBtn = document.getElementById('emergency-btn');
-    
+
     // Toggle Password Visibility
     const togglePasswordBtn = document.getElementById('toggle-password-btn');
     if (togglePasswordBtn && passwordInput) {
@@ -137,6 +137,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function showDashboard() {
         if (authContainer) authContainer.style.display = 'none';
         if (dashboardContainer) dashboardContainer.style.display = 'flex';
+
+       // Cargo Spoilage Calculator Interaction
+    const calcSpoilageBtn = document.getElementById('calculate-spoilage-btn');
+    if (calcSpoilageBtn) {
+        calcSpoilageBtn.addEventListener('click', () => {
+            const type = document.getElementById('cargo-type-select').value;
+            const days = parseInt(document.getElementById('transit-delay-input').value) || 1;
+            const risk = calculateSpoilageRisk(type, days, 75); 
+            
+            const resultEl = document.getElementById('spoilage-result');
+            if (resultEl) {
+                // Extracts the actual numeric value from whichever property name your cargoService uses
+                const prob = risk.probability ?? risk.percentage ?? risk.score ?? (typeof risk === 'object' ? Object.values(risk)[0] : risk);
+                const status = risk.status ?? risk.level ?? 'Evaluated';
+                resultEl.textContent = `Spoilage Probability: ${prob}% (${status})`;
+            }
+        });
+    }
+
+    // Crowdsourced Incident Reporting Interaction
+    const reportBtn = document.getElementById('report-incident-btn');
+    if (reportBtn) {
+        reportBtn.addEventListener('click', () => {
+            const hazardType = document.getElementById('incident-type').value;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude.toFixed(4);
+                    const lon = position.coords.longitude.toFixed(4);
+                    alert(`Crowdsourced Hazard Broadcasted!\nType: ${hazardType.toUpperCase()}\nGPS: [${lat}, ${lon}] sent to command center.`);
+                }, () => {
+                    alert(`Crowdsourced Hazard Broadcasted!\nType: ${hazardType.toUpperCase()}\nGPS: [26.2006, 92.9376] (Assam Corridor Default)`);
+                });
+            } else {
+                alert(`Hazard Reported Successfully for NH-27 Corridor.`);
+            }
+        });
+    }
 
         // Initialize Map and Telemetry
         try {

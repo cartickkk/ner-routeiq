@@ -47,17 +47,57 @@
         </div>
 
         <!-- DASHBOARD CONTAINER (Hidden until login) -->
-        <div id="dashboard-container" class="dashboard-view" style="display: none;">
-            <div class="telemetry-bar">
-                <div><span>Weather Risk:</span> <span id="risk-score-display" class="risk-highlight">Evaluating...</span></div>
-                <div><span>Active Corridors:</span> <span class="corridor-highlight">NH-27 / NH-37 (Monitored)</span></div>
-                <div class="dash-actions">
-                    <button id="emergency-btn" class="btn-danger">🚨 Trigger Emergency Alert</button>
-                    <button id="logout-btn" class="btn-secondary">Logout</button>
-                </div>
-            </div>
-            <div id="map"></div>
+<div id="dashboard-container" class="dashboard-view" style="display: none;">
+    <!-- Top Telemetry Bar -->
+    <div class="telemetry-bar">
+        <div><span>Weather Risk:</span> <span id="risk-score-display" class="risk-highlight">Evaluating...</span></div>
+        <div><span>Active Corridors:</span> <span class="corridor-highlight">NH-27 / NH-37 (Monitored)</span></div>
+        <div class="dash-actions">
+            <button id="emergency-btn" class="btn-danger">🚨 Trigger Emergency Alert</button>
+            <button id="logout-btn" class="btn-secondary">Logout</button>
         </div>
+    </div>
+
+    <!-- Main Workspace: Sidebar Controls + Map -->
+    <div class="dashboard-workspace">
+        <!-- Control Sidebar for Advanced Features -->
+        <aside class="control-sidebar">
+            <div class="panel-section">
+                <h3>📦 Cargo Spoilage Calculator</h3>
+                <div class="form-group">
+                    <label>Cargo Type</label>
+                    <select id="cargo-type-select" class="form-control">
+                        <option value="perishable">Perishable Food / Vegetables</option>
+                        <option value="medical">Medical Supplies / Vaccines</option>
+                        <option value="hardware">General Industrial Hardware</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Transit Delay (Days)</label>
+                    <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
+                </div>
+                <button id="calculate-spoilage-btn" class="btn-primary-sm">Compute Spoilage Risk</button>
+                <div id="spoilage-result" class="metric-readout">Risk Score: --</div>
+            </div>
+
+            <div class="panel-section">
+                <h3>📍 Crowdsourced Incident Report</h3>
+                <div class="form-group">
+                    <label>Hazard Type</label>
+                    <select id="incident-type" class="form-control">
+                        <option value="landslide">Landslide / Mudslide</option>
+                        <option value="flood">Flash Flood / Waterlogging</option>
+                        <option value="blockage">Bridge / Road Blockage</option>
+                    </select>
+                </div>
+                <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
+            </div>
+        </aside>
+
+        <!-- Map Viewport -->
+        <div id="map"></div>
+    </div>
+</div>
 
     </main>
 
