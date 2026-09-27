@@ -16,6 +16,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const forgotPasswordLink = document.getElementById('forgot-password-link');
     const logoutBtn = document.getElementById('logout-btn');
     const emergencyBtn = document.getElementById('emergency-btn');
+    
+    // Toggle Password Visibility
+    const togglePasswordBtn = document.getElementById('toggle-password-btn');
+    if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', () => {
+            const currentType = passwordInput.getAttribute('type');
+            if (currentType === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                togglePasswordBtn.textContent = '🔒'; // Changes icon when revealed
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                togglePasswordBtn.textContent = '👁️';
+            }
+        });
+    }
 
     let isSignUpMode = false;
 
