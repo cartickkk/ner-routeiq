@@ -1,5 +1,5 @@
 export async function triggerEmergencyAlert(payload) {
-    const WEBHOOK_URL = 'YOUR_MAKE_COM_WEBHOOK_URL'; // Replace with your Make.com Webhook URL later
+    const WEBHOOK_URL = 'https://hook.eu1.make.com/xq7iotlsa8ra3vx28o4687u3xhcqcbt3'; // Replace with your Make.com Webhook URL later
     try {
         const response = await fetch(WEBHOOK_URL, {
             method: 'POST',
