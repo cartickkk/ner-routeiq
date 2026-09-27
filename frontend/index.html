@@ -60,119 +60,134 @@
 
             <!-- Main Workspace: Sidebar Controls + Map -->
             <div class="dashboard-workspace">
-                <!-- Control Sidebar for Advanced Features -->
-                <aside class="control-sidebar">
+                <!-- Control Sidebar (Collapsible Accordions) -->
+                    <div class="control-sidebar">
 
-                   <!-- 0. Plan Safe Journey Route Planner -->
-                    <div class="panel-section" style="border: 1px solid #38bdf8; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-                        <h3 style="color: #38bdf8;">🗺️ Plan Safe Journey</h3>
-                        <div class="form-group">
-                            <label>From (Origin Hub)</label>
-                            <select id="route-from-select" class="form-control">
-                                <option value="North Dumdum">North Dumdum</option>
-                                <option value="Guwahati">Guwahati</option>
-                                <option value="Siliguri">Siliguri</option>
-                                <option value="Shillong">Shillong</option>
-                                <option value="Dibrugarh">Dibrugarh</option>
-                                <option value="Agartala">Agartala</option>
-                                <option value="Imphal">Imphal</option>
-                                <option value="Kohima">Kohima</option>
-                                <option value="Aizawl">Aizawl</option>
-                                <option value="Itanagar">Itanagar</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Destination (NER Corridor)</label>
-                            <select id="route-dest-select" class="form-control">
-                                <option value="Guwahati" selected>Guwahati</option>
-                                <option value="Shillong">Shillong</option>
-                                <option value="Siliguri">Siliguri</option>
-                                <option value="Dibrugarh">Dibrugarh</option>
-                                <option value="Kohima">Kohima</option>
-                                <option value="Imphal">Imphal</option>
-                                <option value="Agartala">Agartala</option>
-                                <option value="Aizawl">Aizawl</option>
-                                <option value="Itanagar">Itanagar</option>
-                                <option value="Koch Bihar">Koch Bihar</option>
-                            </select>
-                        </div>
-                        <button id="find-safest-route-btn" class="btn-primary-sm" style="background: #2563eb;">Find Safest Route</button>
-                        <div id="route-status-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 8px; color: #38bdf8;">Select origin & destination hubs.</div>
-                    </div>
-                    
-                    <!-- 1. Cargo Spoilage Calculator -->
-                    <div class="panel-section">
-                        <h3>📦 Cargo Spoilage Calculator</h3>
-                        <div class="form-group">
-                            <label>Cargo Type</label>
-                            <select id="cargo-type-select" class="form-control">
-                                <option value="perishable">Perishable Food / Vegetables</option>
-                                <option value="medical">Medical Supplies / Vaccines</option>
-                                <option value="hardware">General Industrial Hardware</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Transit Delay (Days)</label>
-                            <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
-                        </div>
-                        <button id="calculate-spoilage-btn" class="btn-primary-sm">Compute Spoilage Risk</button>
-                        <div id="spoilage-result" class="metric-readout">Risk Score: --</div>
-                    </div>
+                        <!-- 0. Plan Safe Journey Route Planner -->
+                        <details class="panel-section accordion-section" open>
+                            <summary>🗺️ Plan Safe Journey</summary>
+                            <div class="accordion-content">
+                                <div class="form-group">
+                                    <label>From (Origin Hub)</label>
+                                    <select id="route-from-select" class="form-control">
+                                        <option value="North Dumdum">North Dumdum</option>
+                                        <option value="Guwahati">Guwahati</option>
+                                        <option value="Siliguri">Siliguri</option>
+                                        <option value="Shillong">Shillong</option>
+                                        <option value="Dibrugarh">Dibrugarh</option>
+                                        <option value="Agartala">Agartala</option>
+                                        <option value="Imphal">Imphal</option>
+                                        <option value="Kohima">Kohima</option>
+                                        <option value="Aizawl">Aizawl</option>
+                                        <option value="Itanagar">Itanagar</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Destination (NER Corridor)</label>
+                                    <select id="route-dest-select" class="form-control">
+                                        <option value="Guwahati" selected>Guwahati</option>
+                                        <option value="Shillong">Shillong</option>
+                                        <option value="Siliguri">Siliguri</option>
+                                        <option value="Dibrugarh">Dibrugarh</option>
+                                        <option value="Kohima">Kohima</option>
+                                        <option value="Imphal">Imphal</option>
+                                        <option value="Agartala">Agartala</option>
+                                        <option value="Aizawl">Aizawl</option>
+                                        <option value="Itanagar">Itanagar</option>
+                                        <option value="Koch Bihar">Koch Bihar</option>
+                                    </select>
+                                </div>
+                                <button id="find-safest-route-btn" class="btn-primary-sm" style="background: #2563eb;">Find Safest Route</button>
+                                <div id="route-status-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 8px; color: #38bdf8;">Select origin & destination hubs.</div>
+                            </div>
+                        </details>
 
-                    <!-- 2. Crowdsourced Incident Report -->
-                    <div class="panel-section">
-                        <h3>📍 Crowdsourced Incident Report</h3>
-                        <div class="form-group">
-                            <label>Hazard Type</label>
-                            <select id="incident-type" class="form-control">
-                                <option value="landslide">Landslide / Mudslide</option>
-                                <option value="flood">Flash Flood / Waterlogging</option>
-                                <option value="blockage">Bridge / Road Blockage</option>
-                            </select>
-                        </div>
-                        <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
-                    </div>
+                        <!-- 1. Crowdsourced Incident Reporting -->
+                        <details class="panel-section accordion-section">
+                            <summary>🚨 Crowdsourced Incidents</summary>
+                            <div class="accordion-content">
+                                <div class="form-group">
+                                    <label>Hazard Type</label>
+                                    <select id="incident-type" class="form-control">
+                                        <option value="landslide">Landslide / Mudslide</option>
+                                        <option value="bridge_blocked">Bridge / Road Blockade</option>
+                                        <option value="flash_flood">Flash Flood / Waterlogging</option>
+                                        <option value="accident">Vehicle Collision</option>
+                                    </select>
+                                </div>
+                                <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
+                            </div>
+                        </details>
 
-                    <!-- 3. Driver Fatigue & Compliance Tracker -->
-                    <div class="panel-section fatigue-card">
-                        <h3>🛡️ Driver Fatigue Tracker</h3>
-                        <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Monitor continuous driving hours and trigger safety rest stops.</p>
-                        <div class="form-group">
-                            <label for="driving-hours-input">Continuous Driving (Mins)</label>
-                            <input type="number" id="driving-hours-input" value="150" min="30" max="600" class="form-control">
-                        </div>
-                        <button id="check-fatigue-btn" class="btn-primary-sm" style="width: 100%; margin-top: 5px;">Evaluate Driver Status</button>
-                        <div id="fatigue-result" style="margin-top: 10px; padding: 8px 10px; background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; border-radius: 4px; font-size: 0.85rem; color: #e2e8f0;">Status: Ready for telemetry.</div>
-                    </div>
+                        <!-- 2. Cargo Spoilage Calculator -->
+                        <details class="panel-section accordion-section">
+                            <summary>📦 Cargo Spoilage Risk</summary>
+                            <div class="accordion-content">
+                                <div class="form-group">
+                                    <label>Cargo Type</label>
+                                    <select id="cargo-type-select" class="form-control">
+                                        <option value="perishable">Perishable Food / Vegetables</option>
+                                        <option value="medicine">Vaccines / Pharmaceuticals</option>
+                                        <option value="electronics">Sensitive Electronics</option>
+                                        <option value="handicraft">Traditional Bamboo / Handcrafts</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Estimated Transit Delay (Days)</label>
+                                    <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
+                                </div>
+                                <button id="calculate-spoilage-btn" class="btn-primary-sm">Evaluate Spoilage</button>
+                                <div id="spoilage-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Spoilage Risk: Awaiting analysis.</div>
+                            </div>
+                        </details>
 
-                    <!-- 4. Fuel & Carbon Footprint Optimizer -->
-                    <div class="panel-section">
-                        <h3>⛽ Fuel & Carbon Optimizer</h3>
-                        <div class="form-group">
-                            <label>Estimated Route Distance (km)</label>
-                            <input type="number" id="route-distance-input" value="320" min="10" max="2000" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Terrain Condition</label>
-                            <select id="terrain-condition-select" class="form-control">
-                                <option value="hilly">Hilly / Ghat Section (NER)</option>
-                                <option value="mountainous">Mountainous Pass (High Risk)</option>
-                                <option value="flat">Plain Highway Corridor</option>
-                            </select>
-                        </div>
-                        <button id="calculate-fuel-btn" class="btn-primary-sm">Analyze Fuel & Carbon</button>
-                        <div id="fuel-result" class="metric-readout" style="margin-top: 10px; font-size: 0.8rem; color: #38bdf8;">Fuel & Emissions: Awaiting calculation.</div>
-                    </div>
+                        <!-- 3. Driver Fatigue & Compliance -->
+                        <details class="panel-section accordion-section">
+                            <summary>💤 Driver Fatigue & Compliance</summary>
+                            <div class="accordion-content">
+                                <div class="form-group">
+                                    <label>Continuous Driving Duration</label>
+                                    <input type="number" id="driving-hours-input" value="270" min="30" max="720" class="form-control" placeholder="Minutes">
+                                </div>
+                                <button id="check-fatigue-btn" class="btn-primary-sm">Analyze Fatigue Status</button>
+                                <div id="fatigue-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Status: Awaiting telemetry.</div>
+                            </div>
+                        </details>
 
-                    <!-- 5. Offline Resiliency & Sync Status -->
-                    <div class="panel-section">
-                        <h3>📡 Offline Resiliency Hub</h3>
-                        <div id="network-status-badge" style="padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; margin-bottom: 8px;">
-                            🟢 Network Online (Cloud Synced)
-                        </div>
-                        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 8px;">Auto-caches reports during signal loss in hilly terrains.</p>
-                        <button id="simulate-offline-btn" class="btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 6px;">Toggle Offline Simulation</button>
-                        <div id="sync-queue-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px; color: #cbd5e1;">Pending Syncs: 0 items</div>
+                        <!-- 4. Fuel & Carbon Footprint Optimizer -->
+                        <details class="panel-section accordion-section">
+                            <summary>⛽ Fuel & Carbon Optimizer</summary>
+                            <div class="accordion-content">
+                                <div class="form-group">
+                                    <label>Route Distance (km)</label>
+                                    <input type="number" id="route-distance-input" value="320" min="10" max="2000" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Terrain Condition</label>
+                                    <select id="terrain-condition-select" class="form-control">
+                                        <option value="hilly">Hilly / Ghat Section (NER)</option>
+                                        <option value="mountainous">Mountainous Pass (High Risk)</option>
+                                        <option value="flat">Plain Highway Corridor</option>
+                                    </select>
+                                </div>
+                                <button id="calculate-fuel-btn" class="btn-primary-sm">Analyze Fuel & Carbon</button>
+                                <div id="fuel-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Fuel & Emissions: Awaiting calculation.</div>
+                            </div>
+                        </details>
+
+                        <!-- 5. Offline Resiliency Hub -->
+                        <details class="panel-section accordion-section">
+                            <summary>📡 Offline Resiliency Hub</summary>
+                            <div class="accordion-content">
+                                <div id="network-status-badge" style="padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; margin-bottom: 8px;">
+                                    🟢 Network Online (Cloud Synced)
+                                </div>
+                                <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 8px;">Auto-caches reports during signal loss in hilly terrains.</p>
+                                <button id="simulate-offline-btn" class="btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 6px;">Toggle Offline Simulation</button>
+                                <div id="sync-queue-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px; color: #cbd5e1;">Pending Syncs: 0 items</div>
+                            </div>
+                        </details>
+
                     </div>
 
                 </aside>

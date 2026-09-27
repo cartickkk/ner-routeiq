@@ -153,7 +153,7 @@ body {
 }
 
 /* ==========================================
-   6. CONTROL SIDEBAR & PANELS
+   CONTROL SIDEBAR & SCROLLABLE ACCORDIONS
    ========================================== */
 .control-sidebar {
     width: 320px;
@@ -162,11 +162,75 @@ body {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
+    gap: 12px;
+    overflow-y: auto; /* Enables smooth vertical scroll when multiple tabs are open */
+    height: 100%;
     z-index: 5;
 }
 
+/* Custom scrollbar styling for slick enterprise look */
+.control-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.control-sidebar::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+.control-sidebar::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+
+.accordion-section {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    flex-shrink: 0; /* Prevents accordion sections from compressing when multiple are open */
+}
+
+.accordion-section[open] {
+    border-color: #0891b2;
+}
+
+.accordion-section summary {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #22d3ee;
+    padding: 12px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0f172a;
+}
+
+.accordion-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.accordion-section summary::after {
+    content: '▼';
+    font-size: 0.7rem;
+    color: #94a3b8;
+    transition: transform 0.2s ease;
+}
+
+.accordion-section[open] summary::after {
+    transform: rotate(180deg);
+    color: #22d3ee;
+}
+
+.accordion-content {
+    padding: 0 12px 12px 12px;
+    background-color: #0f172a;
+}
+
+/* Fallback panel section for compatibility */
 .panel-section {
     background-color: #0f172a;
     border: 1px solid #334155;
@@ -185,7 +249,7 @@ body {
    7. FORM CONTROLS & BUTTONS
    ========================================== */
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .form-group label {
@@ -193,7 +257,7 @@ body {
     font-size: 0.875rem;
     font-weight: 500;
     color: #cbd5e1;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .form-group input {
@@ -250,7 +314,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.85rem;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .btn-primary-sm:hover {
@@ -267,7 +331,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.85rem;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .btn-warning-sm:hover {
@@ -305,7 +369,7 @@ body {
 }
 
 .metric-readout {
-    margin-top: 8px;
+    margin-top: 6px;
     font-size: 0.85rem;
     color: #fbbf24;
     font-weight: 600;
