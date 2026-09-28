@@ -500,7 +500,6 @@ body {
     #auth-container:has(.dashboard-view:not([style*="display: none"])) {
         display: none !important;
     }
-}
 
     .main-content {
         height: auto;
