@@ -496,32 +496,39 @@ body {
    ========================================== */
 @media (max-width: 960px) {
     body {
-        height: auto;
-        overflow-y: auto;
+        height: 100vh;
+        overflow: hidden;
     }
 
     .main-content {
-        height: auto;
-        min-height: calc(100vh - 65px);
+        position: absolute;
+        inset: 65px 0 0 0;
+        height: calc(100vh - 65px);
         display: flex;
-        align-items: center; /* Centers the card vertically on phones */
+        align-items: center;
         justify-content: center;
-        padding: 12px;
+        padding: 16px;
     }
 
     #auth-container {
+        position: relative;
         width: 100%;
-        height: auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin: 0;
         padding: 0;
     }
 
     .auth-card {
         width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 auto !important;
-        padding: 24px 16px !important;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+        max-width: 400px !important;
+        margin: auto !important;
+        padding: 24px 20px !important;
+        box-sizing: border-box;
+        max-height: 85vh;
+        overflow-y: auto;
     }
 
     .dashboard-view {
