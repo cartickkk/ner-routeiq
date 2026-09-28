@@ -495,6 +495,11 @@ body {
    10. UNIVERSAL MOBILE & TABLET RESPONSIVE
    ========================================== */
 @media (max-width: 960px) {
+    body {
+        height: auto !important;
+        overflow-y: auto !important;
+    }
+
     /* Hide leftover auth elements on mobile when dashboard is active */
     #auth-container:has(.dashboard-view[style*="display: block"]),
     #auth-container:has(.dashboard-view:not([style*="display: none"])) {
@@ -502,8 +507,9 @@ body {
     }
 
     .main-content {
-        height: auto;
+        height: auto !important;
         min-height: calc(100vh - 65px);
+        overflow-y: auto !important;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -533,8 +539,9 @@ body {
     }
 
     .dashboard-view {
-        position: relative;
-        height: auto;
+        position: relative !important;
+        height: auto !important;
+        overflow-y: visible !important;
     }
 
     .telemetry-bar {
@@ -549,22 +556,23 @@ body {
     }
 
     .dashboard-workspace {
-        flex-direction: column;
-        height: auto;
-        overflow: visible;
+        flex-direction: column !important;
+        height: auto !important;
+        overflow: visible !important;
     }
 
     .control-sidebar {
-        width: 100%;
-        max-height: none;
+        width: 100% !important;
+        max-height: none !important;
         border-right: none;
         border-bottom: 2px solid #334155;
         padding: 12px;
+        overflow-y: visible !important;
     }
 
     #map {
-        width: 100%;
-        height: 450px;
-        min-height: 450px;
+        width: 100% !important;
+        height: 450px !important;
+        min-height: 450px !important;
     }
 }
