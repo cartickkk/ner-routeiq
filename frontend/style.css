@@ -495,10 +495,12 @@ body {
    10. UNIVERSAL MOBILE & TABLET RESPONSIVE
    ========================================== */
 @media (max-width: 960px) {
-    body {
-        height: auto;
-        overflow-y: auto;
+    /* Hide leftover auth elements on mobile when dashboard is active */
+    #auth-container:has(.dashboard-view[style*="display: block"]),
+    #auth-container:has(.dashboard-view:not([style*="display: none"])) {
+        display: none !important;
     }
+}
 
     .main-content {
         height: auto;
