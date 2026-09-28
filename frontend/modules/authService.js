@@ -23,7 +23,11 @@ export async function getCurrentUser() {
     return session ? session.user : null;
 }
 
-export async function resetPassword(email) {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+export async function resetPassword(email, redirectToUrl) {
+    const options = redirectToUrl ? { redirectTo: redirectToUrl } : {};
+    const { error } = await supabase.auth.resetPasswordForEmail(email, options);
     if (error) throw error;
 }
+
+// Export supabase so app.js can use it for Google OAuth and other auth calls
+export { supabase };

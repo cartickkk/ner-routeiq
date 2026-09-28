@@ -36,21 +36,29 @@ body {
     gap: 12px;
 }
 
-.logo-area h1 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #22d3ee;
-    letter-spacing: 0.05em;
+/* Glowing Gradient Title */
+.logo-glow {
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+    margin: 0;
 }
 
-.badge {
-    background-color: #164e63;
-    color: #67e8f9;
+/* Slick Futuristic PSID Badge */
+.psid-badge {
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    padding: 4px 10px;
+    border-radius: 20px;
     font-size: 0.75rem;
-    padding: 3px 8px;
-    border-radius: 4px;
-    border: 1px solid #0891b2;
     font-weight: 600;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 /* ==========================================
@@ -59,11 +67,11 @@ body {
 .main-content {
     flex: 1;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+    display: block;
+    width: 100vw;
     height: calc(100vh - 65px);
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    overflow: hidden;
 }
 
 .dashboard-view {
@@ -73,6 +81,8 @@ body {
     flex-direction: column;
     width: 100%;
     height: 100%;
+    background-color: #0f172a;
+    z-index: 20;
 }
 
 .dashboard-workspace {
@@ -84,16 +94,32 @@ body {
 }
 
 /* ==========================================
-   4. AUTHENTICATION CARD STYLING
+   4. AUTHENTICATION CARD & BUBBLES
    ========================================== */
-.auth-card {
+#auth-container {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-width: 420px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    padding: 20px;
+}
+
+.auth-card {
+    position: relative;
+    z-index: 10;
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: auto !important;
     padding: 32px;
-    background-color: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    background-color: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
 }
 
 .auth-card h2 {
@@ -101,7 +127,9 @@ body {
     font-weight: 700;
     margin-bottom: 24px;
     text-align: center;
-    color: #22d3ee;
+    background: linear-gradient(90deg, #22d3ee, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .auth-footer {
@@ -118,6 +146,53 @@ body {
 
 .auth-footer a:hover {
     text-decoration: underline;
+}
+
+/* Bubble Background Container */
+.bubble-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.bubble-bg span {
+    position: absolute;
+    bottom: -150px;
+    width: calc(var(--i) * 3.5px);
+    height: calc(var(--i) * 3.5px);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 50%;
+    animation: floatUpwards 15s linear infinite;
+    animation-duration: calc(25s / var(--i));
+    left: calc(var(--i) * 7%);
+}
+
+.bubble-bg span:nth-child(even) {
+    background: rgba(129, 140, 248, 0.1);
+    border-color: rgba(129, 140, 248, 0.2);
+}
+
+@keyframes floatUpwards {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.8;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-900px) scale(1.1);
+        opacity: 0;
+    }
 }
 
 /* ==========================================
@@ -163,12 +238,11 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    overflow-y: auto; /* Enables smooth vertical scroll when multiple tabs are open */
+    overflow-y: auto;
     height: 100%;
     z-index: 5;
 }
 
-/* Custom scrollbar styling for slick enterprise look */
 .control-sidebar::-webkit-scrollbar {
     width: 6px;
 }
@@ -188,7 +262,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     transition: border-color 0.2s;
-    flex-shrink: 0; /* Prevents accordion sections from compressing when multiple are open */
+    flex-shrink: 0;
 }
 
 .accordion-section[open] {
@@ -230,7 +304,6 @@ body {
     background-color: #0f172a;
 }
 
-/* Fallback panel section for compatibility */
 .panel-section {
     background-color: #0f172a;
     border: 1px solid #334155;

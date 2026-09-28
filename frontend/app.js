@@ -1,4 +1,3 @@
-import { signIn, signUp, signOut, getCurrentUser, resetPassword } from './modules/authService.js';
 import { checkDriverFatigue } from './modules/driverService.js';
 import { initMap } from './modules/mapService.js';
 import { fetchWeather } from './modules/weatherService.js';
@@ -10,13 +9,14 @@ import { calculateFuelAndCarbon } from './modules/fuelService.js';
 import { initNetworkListener, queueOfflineAction } from './modules/offlineService.js';
 import { calculateSafeRoute } from './modules/routePlannerService.js';
 import { drawRouteOnMap } from './modules/mapService.js';
+import { signIn, signUp, signOut, getCurrentUser, resetPassword, supabase } from './modules/authService.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('auth-container');
     const dashboardContainer = document.getElementById('dashboard-container');
     const loginForm = document.getElementById('login-form');
-    const emailInput = document.getElementById('email-input');
-    const passwordInput = document.getElementById('password-input');
+    const emailInput = document.getElementById('auth-email');
+    const passwordInput = document.getElementById('auth-password');
     const toggleAuthModeBtn = document.getElementById('toggle-auth-mode');
     const forgotPasswordLink = document.getElementById('forgot-password-link');
     const logoutBtn = document.getElementById('logout-btn');
@@ -39,8 +39,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let isSignUpMode = false;
 
-    // Check existing active session
+    // Check existing active session or password reset token in URL hash
     try {
+        const hash = window.location.hash;
+        
+        // Handle Password Recovery Flow
+        if (hash && hash.includes('type=recovery')) {
+            const newPassword = prompt('Password recovery verified! Please enter your new password:');
+            if (newPassword) {
+                const { error } = await supabase.auth.updateUser({ password: newPassword });
+                if (error) {
+                    alert('Error updating password: ' + error.message);
+                } else {
+                    alert('Password successfully updated! You can now log in with your new password.');
+                    // Clean the hash from the URL and sign out so they log in fresh
+                    await supabase.auth.signOut();
+                    window.location.hash = '';
+                    window.location.reload();
+                    return;
+                }
+            }
+        }
+
         const user = await getCurrentUser();
         if (user) {
             showDashboard();
@@ -72,20 +92,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Handle Forgot Password click
+    // --- Google OAuth Sign-In Handler ---
+    const googleLoginBtn = document.getElementById('google-login-btn');
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', async () => {
+            try {
+                if (!supabase) throw new Error("Supabase client not loaded.");
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/frontend/index.html'
+                    }
+                });
+                if (error) {
+                    alert('Google Login Error: ' + error.message);
+                }
+            } catch (err) {
+                alert('Google Login Error: ' + err.message);
+            }
+        });
+    }
+
+    // --- Forgot Password Link Handler ---
     if (forgotPasswordLink) {
         forgotPasswordLink.addEventListener('click', async (e) => {
             e.preventDefault();
             const email = emailInput ? emailInput.value.trim() : '';
+            
             if (!email) {
-                alert('Please enter your email address in the field above first.');
+                alert('Please enter your email address in the Email field above first, then click "Forgot Password?".');
                 return;
             }
+
             try {
-                await resetPassword(email);
-                alert('Password reset link sent to your email.');
+                const explicitRedirect = window.location.origin + '/frontend/index.html';
+                await resetPassword(email, explicitRedirect);
+                alert('Password reset link sent! Check your inbox at ' + email);
             } catch (err) {
-                alert('Error: ' + err.message);
+                alert('Password Reset Error: ' + err.message);
             }
         });
     }
@@ -117,6 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             await signOut();
+            showAuth();
         });
     }
 
@@ -144,29 +189,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (dashboardContainer) dashboardContainer.style.display = 'flex';
 
         // 0. Plan Safe Journey Route Planner Handler
-    const findRouteBtn = document.getElementById('find-safest-route-btn');
-    if (findRouteBtn) {
-        findRouteBtn.addEventListener('click', () => {
-            const fromCity = document.getElementById('route-from-select').value;
-            const destCity = document.getElementById('route-dest-select').value;
-            
-            const routeData = calculateSafeRoute(fromCity, destCity);
-            drawRouteOnMap(routeData);
+        const findRouteBtn = document.getElementById('find-safest-route-btn');
+        if (findRouteBtn) {
+            findRouteBtn.addEventListener('click', () => {
+                const fromCity = document.getElementById('route-from-select').value;
+                const destCity = document.getElementById('route-dest-select').value;
+                
+                const routeData = calculateSafeRoute(fromCity, destCity);
+                drawRouteOnMap(routeData);
 
-            const readout = document.getElementById('route-status-readout');
-            if (readout) {
-                readout.innerHTML = `✅ Route calculated: <b>${routeData.distanceKm} km</b> (~${routeData.estimatedHours} hrs).<br><b style="color: #f87171;">⚠️ ${routeData.disasterZones.length} predicted disaster zone(s) mapped.</b>`;
-            }
-
-            // Auto-scroll to map on mobile screens when route is computed
-            if (window.innerWidth <= 960) {
-                const mapElement = document.getElementById('map');
-                if (mapElement) {
-                    mapElement.scrollIntoView({ behavior: 'smooth' });
+                const readout = document.getElementById('route-status-readout');
+                if (readout) {
+                    readout.innerHTML = `✅ Route calculated: <b>${routeData.distanceKm} km</b> (~${routeData.estimatedHours} hrs).<br><b style="color: #f87171;">⚠️ ${routeData.disasterZones.length} predicted disaster zone(s) mapped.</b>`;
                 }
-            }
-        });
-    }
+
+                if (window.innerWidth <= 960) {
+                    const mapElement = document.getElementById('map');
+                    if (mapElement) {
+                        mapElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        }
 
         // 1. Crowdsourced Incident Reporting Interaction
         const reportBtn = document.getElementById('report-incident-btn');
@@ -302,7 +346,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Hook into crowdsourced incident reporting to support offline queueing
         if (reportBtn) {
             reportBtn.addEventListener('click', () => {
                 if (simulatedOffline) {
@@ -312,7 +355,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Initialize Map and Telemetry
         try {
             initMap('map');
             const weather = await fetchWeather();

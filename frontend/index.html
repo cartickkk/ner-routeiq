@@ -12,37 +12,83 @@
     <!-- Header -->
     <header class="app-header">
         <div class="logo-area">
-            <h1>NER-RouteIQ</h1>
-            <span class="badge">SIH26002</span>
-        </div>
+    <h1 class="logo-glow">NER-RouteIQ</h1>
+    <span class="psid-badge">SIH ID: 171035</span>
+</div>
         <div id="user-nav"></div>
     </header>
 
     <!-- Main Container -->
     <main class="main-content">
 
-        <!-- AUTH CONTAINER (Centered Login/Signup Box) -->
-        <div id="auth-container" class="auth-card">
-            <h2>Operator Login</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label>Official Email</label>
-                    <input type="email" id="email-input" required placeholder="operator@ner-routeiq.gov.in">
+        <!-- Auth View Container -->
+        <div id="auth-container" class="main-content">
+    <!-- Animated Floating Bubbles Background -->
+    <div class="bubble-bg">
+        <span style="--i:11;"></span>
+        <span style="--i:12;"></span>
+        <span style="--i:24;"></span>
+        <span style="--i:10;"></span>
+        <span style="--i:14;"></span>
+        <span style="--i:23;"></span>
+        <span style="--i:18;"></span>
+        <span style="--i:16;"></span>
+        <span style="--i:19;"></span>
+        <span style="--i:20;"></span>
+    </div>
+
+    <div class="auth-card">
+        <h2>Operator Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="auth-email">Email Address</label>
+                <input type="email" id="auth-email" required placeholder="operator@ner-routeiq.gov">
+            </div>
+            <div class="form-group" style="position: relative;">
+                <label for="auth-password">Password</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" id="auth-password" required placeholder="••••••••" style="padding-right: 40px; width: 100%;">
+                    <button type="button" id="toggle-password-btn" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 1rem; color: #94a3b8;" title="Toggle Password Visibility">👁️</button>
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <div style="position: relative;">
-                        <input type="password" id="password-input" required placeholder="••••••••" style="width: 100%; padding-right: 40px;">
-                        <button type="button" id="toggle-password-btn" title="Show/Hide Password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #94a3b8;">
-                            👁️
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" class="btn-primary">Login</button>
-            </form>
-            <div class="auth-footer">
+            </div>
+            <div style="text-align: right; margin-bottom: 14px;">
+                <a href="#" id="forgot-password-link" style="font-size: 0.85rem; color: #38bdf8; text-decoration: none;">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <div style="display: flex; align-items: center; margin: 16px 0; color: #64748b; font-size: 0.8rem;">
+            <div style="flex: 1; height: 1px; background: #334155;"></div>
+            <span style="padding: 0 10px;">OR</span>
+            <div style="flex: 1; height: 1px; background: #334155;"></div>
+        </div>
+
+        <button type="button" id="google-login-btn" class="btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background-color: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.95H1.2v3.15C3.16 21.32 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.25c-.25-.72-.38-1.49-.38-2.25s.13-1.53.38-2.25V6.6H1.2C.43 8.15 0 9.89 0 12s.43 3.85 1.2 5.4l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.16 2.68 1.2 6.6l4.08 3.15c.95-2.84 3.6-4.95 6.72-4.95z"/></svg>
+            Continue with Google
+        </button>
+
+        <div class="auth-footer">
+            <span style="color: #94a3b8;">Need an account?</span>
+            <a href="#" id="toggle-auth-mode" style="color: #38bdf8; font-weight: 600;">Sign Up</a>
+        </div>
+    </div>
+</div>
+
+    <!-- Your existing Login Form Card goes here -->
+    <div class="login-card">
+       ...
+    </div>
+</div>
+
+            <!-- Google OAuth Button -->
+            <button id="google-login-btn" type="button" class="btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background-color: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.16 21.32 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.85 0 11.6s.43 3.47 1.18 4.99l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.16 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                Continue with Google
+            </button>
+
+            <div class="auth-footer" style="margin-top: 20px; text-align: center;">
                 <a href="#" id="toggle-auth-mode">Need an account? Sign Up</a>
-                <a href="#" id="forgot-password-link">Forgot Password?</a>
             </div>
         </div>
 
@@ -61,136 +107,134 @@
             <!-- Main Workspace: Sidebar Controls + Map -->
             <div class="dashboard-workspace">
                 <!-- Control Sidebar (Collapsible Accordions) -->
-                    <div class="control-sidebar">
+                <div class="control-sidebar">
 
-                        <!-- 0. Plan Safe Journey Route Planner -->
-                        <details class="panel-section accordion-section" open>
-                            <summary>🗺️ Plan Safe Journey</summary>
-                            <div class="accordion-content">
-                                <div class="form-group">
-                                    <label>From (Origin Hub)</label>
-                                    <select id="route-from-select" class="form-control">
-                                        <option value="North Dumdum">North Dumdum</option>
-                                        <option value="Guwahati">Guwahati</option>
-                                        <option value="Siliguri">Siliguri</option>
-                                        <option value="Shillong">Shillong</option>
-                                        <option value="Dibrugarh">Dibrugarh</option>
-                                        <option value="Agartala">Agartala</option>
-                                        <option value="Imphal">Imphal</option>
-                                        <option value="Kohima">Kohima</option>
-                                        <option value="Aizawl">Aizawl</option>
-                                        <option value="Itanagar">Itanagar</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Destination (NER Corridor)</label>
-                                    <select id="route-dest-select" class="form-control">
-                                        <option value="Guwahati" selected>Guwahati</option>
-                                        <option value="Shillong">Shillong</option>
-                                        <option value="Siliguri">Siliguri</option>
-                                        <option value="Dibrugarh">Dibrugarh</option>
-                                        <option value="Kohima">Kohima</option>
-                                        <option value="Imphal">Imphal</option>
-                                        <option value="Agartala">Agartala</option>
-                                        <option value="Aizawl">Aizawl</option>
-                                        <option value="Itanagar">Itanagar</option>
-                                        <option value="Koch Bihar">Koch Bihar</option>
-                                    </select>
-                                </div>
-                                <button id="find-safest-route-btn" class="btn-primary-sm" style="background: #2563eb;">Find Safest Route</button>
-                                <div id="route-status-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 8px; color: #38bdf8;">Select origin & destination hubs.</div>
+                    <!-- 0. Plan Safe Journey Route Planner -->
+                    <details class="panel-section accordion-section" open>
+                        <summary>🗺️ Plan Safe Journey</summary>
+                        <div class="accordion-content">
+                            <div class="form-group">
+                                <label>From (Origin Hub)</label>
+                                <select id="route-from-select" class="form-control">
+                                    <option value="North Dumdum">North Dumdum</option>
+                                    <option value="Guwahati">Guwahati</option>
+                                    <option value="Siliguri">Siliguri</option>
+                                    <option value="Shillong">Shillong</option>
+                                    <option value="Dibrugarh">Dibrugarh</option>
+                                    <option value="Agartala">Agartala</option>
+                                    <option value="Imphal">Imphal</option>
+                                    <option value="Kohima">Kohima</option>
+                                    <option value="Aizawl">Aizawl</option>
+                                    <option value="Itanagar">Itanagar</option>
+                                </select>
                             </div>
-                        </details>
-
-                        <!-- 1. Crowdsourced Incident Reporting -->
-                        <details class="panel-section accordion-section">
-                            <summary>🚨 Crowdsourced Incidents</summary>
-                            <div class="accordion-content">
-                                <div class="form-group">
-                                    <label>Hazard Type</label>
-                                    <select id="incident-type" class="form-control">
-                                        <option value="landslide">Landslide / Mudslide</option>
-                                        <option value="bridge_blocked">Bridge / Road Blockade</option>
-                                        <option value="flash_flood">Flash Flood / Waterlogging</option>
-                                        <option value="accident">Vehicle Collision</option>
-                                    </select>
-                                </div>
-                                <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
+                            <div class="form-group">
+                                <label>Destination (NER Corridor)</label>
+                                <select id="route-dest-select" class="form-control">
+                                    <option value="Guwahati" selected>Guwahati</option>
+                                    <option value="Shillong">Shillong</option>
+                                    <option value="Siliguri">Siliguri</option>
+                                    <option value="Dibrugarh">Dibrugarh</option>
+                                    <option value="Kohima">Kohima</option>
+                                    <option value="Imphal">Imphal</option>
+                                    <option value="Agartala">Agartala</option>
+                                    <option value="Aizawl">Aizawl</option>
+                                    <option value="Itanagar">Itanagar</option>
+                                    <option value="Koch Bihar">Koch Bihar</option>
+                                </select>
                             </div>
-                        </details>
+                            <button id="find-safest-route-btn" class="btn-primary-sm" style="background: #2563eb;">Find Safest Route</button>
+                            <div id="route-status-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 8px; color: #38bdf8;">Select origin & destination hubs.</div>
+                        </div>
+                    </details>
 
-                        <!-- 2. Cargo Spoilage Calculator -->
-                        <details class="panel-section accordion-section">
-                            <summary>📦 Cargo Spoilage Risk</summary>
-                            <div class="accordion-content">
-                                <div class="form-group">
-                                    <label>Cargo Type</label>
-                                    <select id="cargo-type-select" class="form-control">
-                                        <option value="perishable">Perishable Food / Vegetables</option>
-                                        <option value="medicine">Vaccines / Pharmaceuticals</option>
-                                        <option value="electronics">Sensitive Electronics</option>
-                                        <option value="handicraft">Traditional Bamboo / Handcrafts</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Estimated Transit Delay (Days)</label>
-                                    <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
-                                </div>
-                                <button id="calculate-spoilage-btn" class="btn-primary-sm">Evaluate Spoilage</button>
-                                <div id="spoilage-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Spoilage Risk: Awaiting analysis.</div>
+                    <!-- 1. Crowdsourced Incident Reporting -->
+                    <details class="panel-section accordion-section">
+                        <summary>🚨 Crowdsourced Incidents</summary>
+                        <div class="accordion-content">
+                            <div class="form-group">
+                                <label>Hazard Type</label>
+                                <select id="incident-type" class="form-control">
+                                    <option value="landslide">Landslide / Mudslide</option>
+                                    <option value="bridge_blocked">Bridge / Road Blockade</option>
+                                    <option value="flash_flood">Flash Flood / Waterlogging</option>
+                                    <option value="accident">Vehicle Collision</option>
+                                </select>
                             </div>
-                        </details>
+                            <button id="report-incident-btn" class="btn-warning-sm">Broadcast GPS Incident</button>
+                        </div>
+                    </details>
 
-                        <!-- 3. Driver Fatigue & Compliance -->
-                        <details class="panel-section accordion-section">
-                            <summary>💤 Driver Fatigue & Compliance</summary>
-                            <div class="accordion-content">
-                                <div class="form-group">
-                                    <label>Continuous Driving Duration</label>
-                                    <input type="number" id="driving-hours-input" value="270" min="30" max="720" class="form-control" placeholder="Minutes">
-                                </div>
-                                <button id="check-fatigue-btn" class="btn-primary-sm">Analyze Fatigue Status</button>
-                                <div id="fatigue-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Status: Awaiting telemetry.</div>
+                    <!-- 2. Cargo Spoilage Calculator -->
+                    <details class="panel-section accordion-section">
+                        <summary>📦 Cargo Spoilage Risk</summary>
+                        <div class="accordion-content">
+                            <div class="form-group">
+                                <label>Cargo Type</label>
+                                <select id="cargo-type-select" class="form-control">
+                                    <option value="perishable">Perishable Food / Vegetables</option>
+                                    <option value="medicine">Vaccines / Pharmaceuticals</option>
+                                    <option value="electronics">Sensitive Electronics</option>
+                                    <option value="handicraft">Traditional Bamboo / Handcrafts</option>
+                                </select>
                             </div>
-                        </details>
-
-                        <!-- 4. Fuel & Carbon Footprint Optimizer -->
-                        <details class="panel-section accordion-section">
-                            <summary>⛽ Fuel & Carbon Optimizer</summary>
-                            <div class="accordion-content">
-                                <div class="form-group">
-                                    <label>Route Distance (km)</label>
-                                    <input type="number" id="route-distance-input" value="320" min="10" max="2000" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Terrain Condition</label>
-                                    <select id="terrain-condition-select" class="form-control">
-                                        <option value="hilly">Hilly / Ghat Section (NER)</option>
-                                        <option value="mountainous">Mountainous Pass (High Risk)</option>
-                                        <option value="flat">Plain Highway Corridor</option>
-                                    </select>
-                                </div>
-                                <button id="calculate-fuel-btn" class="btn-primary-sm">Analyze Fuel & Carbon</button>
-                                <div id="fuel-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Fuel & Emissions: Awaiting calculation.</div>
+                            <div class="form-group">
+                                <label>Estimated Transit Delay (Days)</label>
+                                <input type="number" id="transit-delay-input" value="2" min="1" max="14" class="form-control">
                             </div>
-                        </details>
+                            <button id="calculate-spoilage-btn" class="btn-primary-sm">Evaluate Spoilage</button>
+                            <div id="spoilage-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Spoilage Risk: Awaiting analysis.</div>
+                        </div>
+                    </details>
 
-                        <!-- 5. Offline Resiliency Hub -->
-                        <details class="panel-section accordion-section">
-                            <summary>📡 Offline Resiliency Hub</summary>
-                            <div class="accordion-content">
-                                <div id="network-status-badge" style="padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; margin-bottom: 8px;">
-                                    🟢 Network Online (Cloud Synced)
-                                </div>
-                                <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 8px;">Auto-caches reports during signal loss in hilly terrains.</p>
-                                <button id="simulate-offline-btn" class="btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 6px;">Toggle Offline Simulation</button>
-                                <div id="sync-queue-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px; color: #cbd5e1;">Pending Syncs: 0 items</div>
+                    <!-- 3. Driver Fatigue & Compliance -->
+                    <details class="panel-section accordion-section">
+                        <summary>💤 Driver Fatigue & Compliance</summary>
+                        <div class="accordion-content">
+                            <div class="form-group">
+                                <label>Continuous Driving Duration</label>
+                                <input type="number" id="driving-hours-input" value="270" min="30" max="720" class="form-control" placeholder="Minutes">
                             </div>
-                        </details>
+                            <button id="check-fatigue-btn" class="btn-primary-sm">Analyze Fatigue Status</button>
+                            <div id="fatigue-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Status: Awaiting telemetry.</div>
+                        </div>
+                    </details>
 
-                    </div>
+                    <!-- 4. Fuel & Carbon Footprint Optimizer -->
+                    <details class="panel-section accordion-section">
+                        <summary>⛽ Fuel & Carbon Optimizer</summary>
+                        <div class="accordion-content">
+                            <div class="form-group">
+                                <label>Route Distance (km)</label>
+                                <input type="number" id="route-distance-input" value="320" min="10" max="2000" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Terrain Condition</label>
+                                <select id="terrain-condition-select" class="form-control">
+                                    <option value="hilly">Hilly / Ghat Section (NER)</option>
+                                    <option value="mountainous">Mountainous Pass (High Risk)</option>
+                                    <option value="flat">Plain Highway Corridor</option>
+                                </select>
+                            </div>
+                            <button id="calculate-fuel-btn" class="btn-primary-sm">Analyze Fuel & Carbon</button>
+                            <div id="fuel-result" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px;">Fuel & Emissions: Awaiting calculation.</div>
+                        </div>
+                    </details>
 
-                </aside>
+                    <!-- 5. Offline Resiliency Hub -->
+                    <details class="panel-section accordion-section">
+                        <summary>📡 Offline Resiliency Hub</summary>
+                        <div class="accordion-content">
+                            <div id="network-status-badge" style="padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; margin-bottom: 8px;">
+                                🟢 Network Online (Cloud Synced)
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 8px;">Auto-caches reports during signal loss in hilly terrains.</p>
+                            <button id="simulate-offline-btn" class="btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 6px;">Toggle Offline Simulation</button>
+                            <div id="sync-queue-readout" class="metric-readout" style="font-size: 0.8rem; margin-top: 6px; color: #cbd5e1;">Pending Syncs: 0 items</div>
+                        </div>
+                    </details>
+
+                </div>
 
                 <!-- Map Viewport -->
                 <div id="map"></div>
